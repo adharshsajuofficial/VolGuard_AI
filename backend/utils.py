@@ -16,12 +16,14 @@ def normalize_symbol(symbol: str) -> str:
 
 
 def risk_level(vol_pct: float) -> str:
-    """Map annualized 5-day vol (%) to Low / Medium / High."""
+    """Map annualized 5-day vol (%) to low / moderate / high / extreme."""
     if vol_pct < config.RISK_LOW_MAX:
-        return "Low"
-    if vol_pct >= config.RISK_HIGH_MIN:
-        return "High"
-    return "Medium"
+        return "low"
+    if vol_pct <= config.RISK_MODERATE_MAX:
+        return "moderate"
+    if vol_pct <= config.RISK_HIGH_MAX:
+        return "high"
+    return "extreme"
 
 
 def clean_float(x, ndigits: int = 4):

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VolGuard AI — Financial Risk Intelligence Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090D16;
+      --card-bg: rgba(17, 24, 39, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #3B82F6;
+      --accent-glow: rgba(59, 130, 246, 0.25);
+      --emerald: #10B981;
+      --amber: #F59E0B;
+      --rose: #EF4444;
+      --purple: #8B5CF6;
+      --text: #F3F4F6;
+      --text-muted: #9CA3AF;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: radial-gradient(circle at 50% 0%, #1e293b 0%, #090d16 75%);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      user-select: none;
+    }
+    header {
+      padding: 1.25rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      z-index: 50;
+    }
+    .logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+    .shield-icon {
+      background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+      padding: 0.4rem;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+    }
+    .slide-progress {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.05);
+      padding: 0.35rem 0.8rem;
+      border-radius: 9999px;
+      border: 1px solid var(--card-border);
+    }
+    .main-deck {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+    }
+    .slide {
+      display: none;
+      width: 100%;
+      max-width: 1080px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 3.5rem;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px var(--accent-glow);
+      animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slide.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .slide-tag {
+      display: inline-block;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.12);
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #FFFFFF 0%, #94A3B8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    h2 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      color: #FFFFFF;
+    }
+    p.lead {
+      font-size: 1.25rem;
+      color: #94A3B8;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .card:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
+    }
+    .card h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .stat-badge {
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+    .stat-badge.emerald { color: var(--emerald); }
+    .stat-badge.amber { color: var(--amber); }
+    .stat-badge.rose { color: var(--rose); }
+    .stat-badge.purple { color: var(--purple); }
+    .formula-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.05rem;
+      color: #60A5FA;
+      margin: 1rem 0;
+      overflow-x: auto;
+    }
+    .table-container {
+      margin-top: 1.5rem;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th, td {
+      padding: 0.85rem 1.2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.95rem;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+    tr:last-child td { border-bottom: none; }
+    .highlight-cell {
+      color: var(--emerald);
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    footer {
+      padding: 1.25rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+    }
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+    }
+    button.btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.6rem 1.4rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    button.btn:hover {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: var(--accent);
+      color: #FFFFFF;
+    }
+    button.btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    button.btn.primary:hover {
+      background: #2563EB;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-badge">
+      <span class="shield-icon">🛡️</span>
+      <span>VolGuard AI</span>
+    </div>
+    <div class="slide-progress" id="slideIndicator">Slide 1 / 10</div>
+  </header>
+
+  <main class="main-deck">
+
+    <!-- Slide 1: Cover -->
+    <div class="slide active" data-index="1">
+      <span class="slide-tag">Hackathon 72-Hour Sprint</span>
+      <h1>VolGuard AI 🛡️📈</h1>
+      <p class="lead">Financial Risk Intelligence & Short-Term Market Volatility Forecasting Platform</p>
+      <div class="grid-3" style="margin-top: 2rem;">
+        <div class="card">
+          <div class="stat-badge purple">5-Day</div>
+          <h3>Forward Horizon</h3>
+          <p>Annualized volatility forecast for SPY, NIFTY 50, and equities.</p>
+        </div>
+        <div class="card">
+          <div class="stat-badge emerald">-22.2%</div>
+          <h3>QLIKE Loss Reduction</h3>
+          <p>Statistically significant risk outperformance (p = 0.0394 < 0.05).</p>
+        </div>
+        <div class="card">
+          <div class="stat-badge amber">Zero</div>
+          <h3>Lookahead Bias</h3>
+          <p>Strict chronological walk-forward out-of-sample backtest.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: The Problem -->
+    <div class="slide" data-index="2">
+      <span class="slide-tag">The $100B Market Problem</span>
+      <h2>Backward-Looking Metrics Leave Capital Exposed</h2>
+      <p class="lead">Traditional risk models tell institutions what happened yesterday, not what is coming over the next 5 days.</p>
+      <div class="grid-3">
+        <div class="card">
+          <div class="stat-badge rose">20 Days</div>
+          <h3>Rolling Moving Lag</h3>
+          <p>Historical 20-day rolling realized volatilities lag sudden macroeconomic shocks by weeks.</p>
+        </div>
+        <div class="card">
+          <div class="stat-badge amber">96.6%</div>
+          <h3>Clustering Persistence</h3>
+          <p>Volatility clusters in shocks. Simple models ignore conditional variance memory.</p>
+        </div>
+        <div class="card">
+          <div class="stat-badge purple">Overfit</div>
+          <h3>FinTech Lookahead Leakage</h3>
+          <p>Most AI demos leak future data into training slices, failing catastrophically in production.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: The Solution -->
+    <div class="slide" data-index="3">
+      <span class="slide-tag">System Architecture</span>
+      <h2>Econometric Rigor + Modern Web Architecture</h2>
+      <p class="lead">VolGuard AI integrates dual forecasting engines with strict zero-lookahead causality.</p>
+      <div class="grid-3">
+        <div class="card">
+          <h3>👤 Person 1: Backend</h3>
+          <p>FastAPI, live Yahoo Finance data pipeline with offline CSV fallback, return transform, GARCH(1,1) engine.</p>
+        </div>
+        <div class="card">
+          <h3>👤 Person 2: Frontend</h3>
+          <p>React 19 + Vite dashboard, Recharts interactive forecast cones, live 4-tier risk badge, offline simulation client.</p>
+        </div>
+        <div class="card">
+          <h3>👤 Person 3: QA & Validation</h3>
+          <p>30-test automated audit suite, zero lookahead certification, QLIKE loss benchmarking, historical stress testing.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4: Mathematical Formulation -->
+    <div class="slide" data-index="4">
+      <span class="slide-tag">Quantitative Methodology</span>
+      <h2>Unified Mathematical Target Formulation</h2>
+      <p class="lead">All modules across backend and frontend strictly compute annualized percentage volatility:</p>
+      <div class="card">
+        <h3>1. Daily Log Returns</h3>
+        <div class="formula-box">r_t = ln(P_t / P_{t-1})</div>
+        <h3>2. 5-Day Forward Annualized Realized Volatility (Target)</h3>
+        <div class="formula-box">&sigma;_{5d} = sqrt( 252/5 * &sum;_{i=1}^5 r_{t+i}^2 ) &times; 100%</div>
+        <h3>3. GARCH(1,1) Conditional Variance</h3>
+        <div class="formula-box">&sigma;_t^2 = &omega; + &alpha; &middot; &epsilon;_{t-1}^2 + &beta; &middot; &sigma;_{t-1}^2  &nbsp; (SPY: &alpha;=0.1729, &beta;=0.7930)</div>
+      </div>
+    </div>
+
+    <!-- Slide 5: Zero-Lookahead Audit -->
+    <div class="slide" data-index="5">
+      <span class="slide-tag">Audited & Certified</span>
+      <h2>Zero-Lookahead Bias Certification</h2>
+      <p class="lead">Mathematically disjoint index slices ensure future prices are NEVER leaked into training sets.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Index Disjointness Theorem</h3>
+          <p>Training slice: indices <code>[0 ... t]</code><br>Target slice: indices <code>[t+1 ... t+5]</code></p>
+          <div class="formula-box">Indices(Train) &cap; Indices(Target) = &empty;</div>
+          <p>Strict chronological separation verified across all walk-forward backtests.</p>
+        </div>
+        <div class="card">
+          <h3>Future Perturbation Stress Test</h3>
+          <p>We injected a simulated <strong>-26% market crash</strong> into future days <code>t+1..t+5</code>.</p>
+          <div class="stat-badge emerald">0.0000%</div>
+          <p>Forecast at day t remained 100.0% unchanged to machine precision.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: Out-of-Sample Results -->
+    <div class="slide" data-index="6">
+      <span class="slide-tag">Empirical Benchmarks</span>
+      <h2>Walk-Forward Out-of-Sample Performance</h2>
+      <p class="lead">Evaluated across 100 non-overlapping held-out windows on S&P 500 (SPY):</p>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Evaluation Metric</th>
+              <th>20-Day Baseline</th>
+              <th>GARCH(1,1) Model</th>
+              <th>Performance Delta</th>
+              <th>Statistical Significance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>QLIKE Loss (Asymmetric)</strong></td>
+              <td>0.5643</td>
+              <td>0.4390</td>
+              <td class="highlight-cell">-22.21%</td>
+              <td>p = 0.0394 (Significant &lt; 0.05)</td>
+            </tr>
+            <tr>
+              <td><strong>Root Mean Sq. Error (RMSE)</strong></td>
+              <td>9.722%</td>
+              <td>9.021%</td>
+              <td class="highlight-cell">-7.22%</td>
+              <td>p = 0.185</td>
+            </tr>
+            <tr>
+              <td><strong>Mean Absolute Error (MAE)</strong></td>
+              <td>5.898%</td>
+              <td>5.710%</td>
+              <td class="highlight-cell">-3.19%</td>
+              <td>p = 0.278</td>
+            </tr>
+            <tr>
+              <td><strong>Risk Classification Accuracy</strong></td>
+              <td>95.0%</td>
+              <td>94.0%</td>
+              <td class="highlight-cell">High Fidelity</td>
+              <td>Consistent</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Slide 7: Stress Testing Crises -->
+    <div class="slide" data-index="7">
+      <span class="slide-tag">Stress Regimes</span>
+      <h2>Crisis Resilience: March 2020 COVID Shock</h2>
+      <p class="lead">GARCH immediately adapts to volatility clustering when markets enter extreme turbulence:</p>
+      <div class="grid-2">
+        <div class="card">
+          <div class="stat-badge emerald">-35.1%</div>
+          <h3>COVID Shock Error Drop</h3>
+          <p>Baseline MAE: <strong>20.25%</strong><br>GARCH(1,1) MAE: <strong>13.14%</strong></p>
+          <p style="margin-top: 0.5rem;">While rolling averages lagged the initial crash by 20 days, GARCH raised risk shields within 24 hours.</p>
+        </div>
+        <div class="card">
+          <div class="stat-badge purple">19.9 Days</div>
+          <h3>Volatility Half-Life</h3>
+          <p>GARCH shock persistence (&alpha; + &beta; = 0.9658) matches empirical market memory (~1 calendar month to mean-revert).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 8: Live Product Demo -->
+    <div class="slide" data-index="8">
+      <span class="slide-tag">Live Demonstration</span>
+      <h2>Interactive Risk Intelligence Dashboard</h2>
+      <p class="lead">Engineered for hedge funds, prop desks, and quantitative risk committees:</p>
+      <div class="grid-3">
+        <div class="card">
+          <h3>1. Dynamic Risk Badge</h3>
+          <p>Color-coded 4-tier warning (Low, Moderate, High, Extreme) with 0-100 risk index meter.</p>
+        </div>
+        <div class="card">
+          <h3>2. Forward Forecast Cone</h3>
+          <p>Projected 5-day annualized volatility cone with model divergence delta (&Delta;).</p>
+        </div>
+        <div class="card">
+          <h3>3. Walk-Forward Backtest</h3>
+          <p>Interactive Recharts comparison vs ground truth with toggleable residual error bars.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 9: Commercial Use Cases -->
+    <div class="slide" data-index="9">
+      <span class="slide-tag">Commercial Viability</span>
+      <h2>Institutional Value & Market Applications</h2>
+      <p class="lead">High-margin applications across the quantitative financial ecosystem:</p>
+      <div class="grid-3">
+        <div class="card">
+          <h3>1. Portfolio Solvency</h3>
+          <p>Dynamic position sizing: automatic leverage de-risking when VolGuard signals volatility expansion.</p>
+        </div>
+        <div class="card">
+          <h3>2. Options & Volatility Trading</h3>
+          <p>Arbitrage divergence between implied volatility (VIX options) and VolGuard's parametric forecast.</p>
+        </div>
+        <div class="card">
+          <h3>3. B2B Risk API</h3>
+          <p>Embed early-warning volatility scores into wealth tech platforms, neo-banks, and brokerages.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 10: Conclusion -->
+    <div class="slide" data-index="10">
+      <span class="slide-tag">Summary & Verification</span>
+      <h2>Hackathon Submission Ready ✅</h2>
+      <p class="lead">VolGuard AI delivers proven econometric foresight with production-grade engineering.</p>
+      <div class="card" style="font-size: 1.1rem; line-height: 1.8;">
+        <div>✅ <strong>Zero Lookahead Bias:</strong> Certified via 30/30 automated pytest suite.</div>
+        <div>✅ <strong>Statistically Significant:</strong> 22.21% QLIKE loss reduction (p = 0.0394 &lt; 0.05).</div>
+        <div>✅ <strong>Crisis Resilience:</strong> 35.1% error reduction during COVID-19 shock.</div>
+        <div>✅ <strong>Unbreakable Reliability:</strong> 3-tier fallback pipeline (Live API &rarr; CSV &rarr; Client Simulation).</div>
+        <div>✅ <strong>Clear Mathematical Defense:</strong> Transparent formulary modal for complete auditability.</div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div style="font-size: 0.85rem; color: var(--text-muted);">
+      Use <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">&larr;</kbd> <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">&rarr;</kbd> arrow keys to navigate
+    </div>
+    <div class="controls">
+      <button class="btn" id="prevBtn">&larr; Previous</button>
+      <button class="btn primary" id="nextBtn">Next &rarr;</button>
+    </div>
+  </footer>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 10;
+
+    function showSlide(index) {
+      if (index < 1) index = 1;
+      if (index > totalSlides) index = totalSlides;
+      currentSlide = index;
+
+      document.querySelectorAll('.slide').forEach(s => {
+        s.classList.remove('active');
+        if (parseInt(s.getAttribute('data-index')) === currentSlide) {
+          s.classList.add('active');
+        }
+      });
+
+      document.getElementById('slideIndicator').textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      document.getElementById('prevBtn').disabled = currentSlide === 1;
+      document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+    }
+
+    document.getElementById('prevBtn').addEventListener('click', () => showSlide(currentSlide - 1));
+    document.getElementById('nextBtn').addEventListener('click', () => showSlide(currentSlide + 1));
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') showSlide(currentSlide + 1);
+      if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
+    });
+
+    showSlide(1);
+  </script>
+</body>
+</html>

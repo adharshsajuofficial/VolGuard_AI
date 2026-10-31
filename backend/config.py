@@ -13,9 +13,11 @@ MAX_HISTORY_DAYS = 252 * 30
 FETCH_PERIOD_YEARS = 12            # history pulled from Yahoo
 MIN_OBSERVATIONS = 300             # min returns needed to fit GARCH sensibly
 
-# Annualized-vol (%) cutoffs for risk classification.
-RISK_LOW_MAX = 12.0
-RISK_HIGH_MIN = 20.0
+# Annualized-vol (%) cutoffs for risk classification (4-tier standard).
+RISK_LOW_MAX = 15.0
+RISK_MODERATE_MAX = 25.0
+RISK_HIGH_MIN = 25.0
+RISK_HIGH_MAX = 35.0
 
 # Backtest defaults (GARCH refit is the slow part).
 BT_MIN_TRAIN = 504                 # ~2 years before first forecast

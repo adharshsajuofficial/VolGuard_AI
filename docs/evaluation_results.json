@@ -1,0 +1,151 @@
+{
+  "generated_at": "2026-10-31T08:39:37.067332",
+  "assets": {
+    "SPY": {
+      "symbol": "SPY",
+      "n_samples": 100,
+      "start_date": "2024-10-31",
+      "end_date": "2026-10-23",
+      "baseline_mae": 5.898,
+      "garch_mae": 5.71,
+      "mae_reduction_pct": 3.19,
+      "baseline_rmse": 9.722,
+      "garch_rmse": 9.021,
+      "rmse_reduction_pct": 7.22,
+      "baseline_qlike": 0.5643,
+      "garch_qlike": 0.439,
+      "qlike_reduction_pct": 22.21,
+      "diebold_mariano_mae": {
+        "mean_loss_differential": 0.1884,
+        "dm_statistic": 0.589,
+        "p_value": 0.278,
+        "statistically_significant": false
+      },
+      "diebold_mariano_qlike": {
+        "mean_loss_differential": 0.1253,
+        "dm_statistic": 1.757,
+        "p_value": 0.0394,
+        "statistically_significant": true
+      },
+      "alarm_baseline": {
+        "TP": 2,
+        "FP": 3,
+        "TN": 93,
+        "FN": 2,
+        "accuracy": 95.0,
+        "precision": 40.0,
+        "recall": 50.0,
+        "f1_score": 0.444
+      },
+      "alarm_garch": {
+        "TP": 2,
+        "FP": 4,
+        "TN": 92,
+        "FN": 2,
+        "accuracy": 94.0,
+        "precision": 33.3,
+        "recall": 50.0,
+        "f1_score": 0.4
+      }
+    },
+    "^NSEI": {
+      "symbol": "^NSEI",
+      "n_samples": 100,
+      "start_date": "2024-10-22",
+      "end_date": "2026-10-23",
+      "baseline_mae": 4.413,
+      "garch_mae": 4.608,
+      "mae_reduction_pct": -4.41,
+      "baseline_rmse": 5.817,
+      "garch_rmse": 5.665,
+      "rmse_reduction_pct": 2.62,
+      "baseline_qlike": 0.3996,
+      "garch_qlike": 0.3966,
+      "qlike_reduction_pct": 0.76,
+      "diebold_mariano_mae": {
+        "mean_loss_differential": -0.1948,
+        "dm_statistic": -0.695,
+        "p_value": 0.7566,
+        "statistically_significant": false
+      },
+      "diebold_mariano_qlike": {
+        "mean_loss_differential": 0.003,
+        "dm_statistic": 0.076,
+        "p_value": 0.4697,
+        "statistically_significant": false
+      },
+      "alarm_baseline": {
+        "TP": 1,
+        "FP": 2,
+        "TN": 93,
+        "FN": 4,
+        "accuracy": 94.0,
+        "precision": 33.3,
+        "recall": 20.0,
+        "f1_score": 0.25
+      },
+      "alarm_garch": {
+        "TP": 0,
+        "FP": 1,
+        "TN": 94,
+        "FN": 5,
+        "accuracy": 94.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0
+      }
+    }
+  },
+  "stress_regimes": {
+    "COVID-19 Shock (Feb - Jun 2020)": {
+      "period": "2020-02-01 to 2020-06-30",
+      "avg_realized_vol": 38.52,
+      "max_realized_vol": 133.41,
+      "baseline_mae": 20.25,
+      "garch_mae": 13.14,
+      "garch_improvement_pct": 35.1,
+      "samples": 35
+    },
+    "2022 Inflation & Rate Bear Market": {
+      "period": "2022-01-01 to 2022-12-31",
+      "avg_realized_vol": 22.44,
+      "max_realized_vol": 41.94,
+      "baseline_mae": 6.22,
+      "garch_mae": 6.55,
+      "garch_improvement_pct": -5.3,
+      "samples": 84
+    },
+    "2017 Low-Volatility Regime": {
+      "period": "2017-01-01 to 2017-12-31",
+      "avg_realized_vol": 6.31,
+      "max_realized_vol": 14.37,
+      "baseline_mae": 2.84,
+      "garch_mae": 4.03,
+      "garch_improvement_pct": -42.0,
+      "samples": 84
+    },
+    "2024-2026 Recent Market Dynamics": {
+      "period": "2024-01-01 to 2026-10-30",
+      "avg_realized_vol": 12.65,
+      "max_realized_vol": 79.52,
+      "baseline_mae": 5.28,
+      "garch_mae": 5.12,
+      "garch_improvement_pct": 3.0,
+      "samples": 236
+    }
+  },
+  "volatility_clustering": {
+    "omega": 0.040809,
+    "alpha": 0.1729,
+    "beta": 0.793,
+    "persistence": 0.9658,
+    "half_life_trading_days": 19.9,
+    "squared_return_autocorrelations": {
+      "lag_1": 0.4204,
+      "lag_2": 0.4528,
+      "lag_5": 0.2829,
+      "lag_10": 0.2145,
+      "lag_20": 0.0965
+    }
+  }
+}
