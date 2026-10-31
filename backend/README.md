@@ -3,6 +3,12 @@
 FastAPI volatility intelligence service: 5-day annualized volatility forecast, 20-day realized-vol baseline vs GARCH(1,1), walk-forward backtest.
 
 ## Run
+One click (creates `.venv`, installs deps, auto-detects Yahoo reachability, starts on :8000):
+```bash
+./run_server.sh            # macOS / Linux   (add --reload for dev, PORT=8001 to change port)
+run_server.bat             :: Windows
+```
+Manual:
 ```bash
 pip install -r requirements.txt
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
@@ -20,9 +26,9 @@ pytest          # offline tests; forces CSV fallback and tests GARCH + models + 
 | Route | Method | Notes |
 |---|---|---|
 | `/health` or `/api/health` | GET | `{"status":"OK"}` |
-| `/api/forecast?symbol=SPY&horizon=5` | GET | Baseline + GARCH forecast (annualized %), `risk_level`, `risk_score`, `current_price` |
+| `/api/forecast?symbol=SPY&horizon=5` | GET | `horizon` 5/10/20 (1-60 accepted). Baseline + GARCH forecast (annualized %), `risk_level`, `risk_score`, real same-horizon `backtest` summary |
 | `/api/history?symbol=SPY&days=60` | GET | Historical dates, `close`, `price`, `log_return`, `return`, `rolling_vol_20d`, `vol20` |
-| `/api/backtest?symbol=SPY&step=5&max_points=150` | GET | MAE/RMSE for both models, zero-lookahead walk-forward test series |
+| `/api/backtest?symbol=SPY&horizon=5&max_points=150` | GET | MAE/RMSE/QLIKE for both models, zero-lookahead walk-forward series. `step` defaults to `max(5, horizon)` (non-overlapping targets) |
 
 Default symbol is `SPY`; use `?symbol=^NSEI` for NIFTY 50.
 ```bash
@@ -42,3 +48,27 @@ fetch("http://localhost:8000/api/forecast?symbol=%5ENSEI").then(r => r.json()).t
 
 ## Data Pipeline
 Attempts live download via `yfinance`. On network timeout, rate-limiting, or offline status, seamlessly falls back to `data/prices.csv`. The response field `source` indicates whether data was served from `yfinance` or `csv`.
+
+## Multi-horizon
+`horizon` 5, 10 or 20 changes the GARCH sum (`h` conditional variances, annualized by `252/h`), the realized target
+(`h` future days) and the backtest. The baseline stays the 20-day realized vol held flat: annualized vol is
+horizon-invariant under a no-change assumption. `forecast_horizon_days`, `summary` and `backtest` all reflect the requested horizon.
+The legacy key `forecast_5d_vol` holds the requested horizon's values; `forecast_vol` is the same object under a neutral name.
+
+## Startup cache pre-warming
+FastAPI `lifespan` fits SPY and ^NSEI (5-day forecast + backtest) before serving. A daemon thread then warms
+10/20-day horizons and QQQ/DIA/AAPL/TSLA. Cached responses return in ~10 ms. Status: `GET /health` -> `cache_warm`.
+Disable with `VOLGUARD_WARMUP=0`.
+
+## Offline data
+`prices.csv` (identical copies in `backend/` and `../data/`) holds SPY, ^NSEI, QQQ, DIA, AAPL, TSLA.
+**QQQ, DIA, AAPL, TSLA are currently labelled synthetic placeholders** (`Origin=synthetic`; factor model on SPY returns),
+because the build environment had no Yahoo access. The API reports `is_synthetic: true` for them.
+Replace with real history once, with internet:
+```bash
+python fetch_offline_data.py            # real data for all 6 tickers, rewrites both CSVs
+```
+Env: `VOLGUARD_OFFLINE=1` forces CSV, `VOLGUARD_CSV=path` overrides CSV location, `VOLGUARD_WARMUP=0` skips warm-up.
+
+## Tests
+`pytest` from `backend/` (offline, no network).

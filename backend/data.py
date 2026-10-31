@@ -37,8 +37,10 @@ def prepare(df: pd.DataFrame) -> pd.DataFrame:
     df.index = pd.to_datetime(df.index).tz_localize(None)
     df.index.name = "Date"
     df = df[~df.index.duplicated(keep="last")].sort_index()
-    col = "Adj Close" if "Adj Close" in df.columns else "Close"
-    if col not in df.columns:
+    # Case-insensitive column search: prefer Adj Close, then Close
+    col_map = {str(c).strip().lower(): c for c in df.columns}
+    col = col_map.get("adj close") or col_map.get("close")
+    if not col:
         raise DataNotFoundError("no Close/Adj Close column")
     df["Price"] = pd.to_numeric(df[col], errors="coerce")
     df = df[df["Price"] > 0].dropna(subset=["Price"])
@@ -48,12 +50,15 @@ def prepare(df: pd.DataFrame) -> pd.DataFrame:
 
 def fetch_online(symbol: str, start: Optional[str] = None, end: Optional[str] = None) -> pd.DataFrame:
     """Download daily OHLCV from Yahoo. Raises on failure or empty result."""
+    if config.OFFLINE_MODE:
+        raise DataNotFoundError("offline mode forced via VOLGUARD_OFFLINE")
     import yfinance as yf
 
     if start is None:
         start = (date.today() - timedelta(days=int(365.25 * config.FETCH_PERIOD_YEARS))).isoformat()
     df = yf.download(symbol, start=start, end=end, interval="1d",
-                     auto_adjust=False, progress=False, threads=False)
+                     auto_adjust=False, progress=False, threads=False,
+                     timeout=config.FETCH_TIMEOUT_SECONDS)
     if df is None or df.empty:
         raise DataNotFoundError(f"yfinance returned no data for {symbol}")
     return df
@@ -64,9 +69,16 @@ def load_csv(symbol: str, path: Optional[str] = None) -> pd.DataFrame:
     path = path or config.CSV_PATH
     if not os.path.exists(path):
         raise DataNotFoundError(f"fallback CSV missing: {path}")
-    df = pd.read_csv(path, parse_dates=["Date"], index_col="Date")
-    if "Symbol" in df.columns:
-        df = df[df["Symbol"].astype(str).str.upper() == symbol.upper()]
+    df = pd.read_csv(path)
+    # Support both 'Date' and lowercase 'date'
+    date_col = next((c for c in df.columns if str(c).strip().lower() == "date"), None)
+    if not date_col:
+        raise DataNotFoundError(f"date column missing in {path}")
+    df["Date"] = pd.to_datetime(df[date_col])
+    df.set_index("Date", inplace=True)
+    sym_col = next((c for c in df.columns if str(c).strip().lower() == "symbol"), None)
+    if sym_col:
+        df = df[df[sym_col].astype(str).str.upper() == symbol.upper()]
         if df.empty:
             raise DataNotFoundError(f"{symbol} not in fallback CSV")
     return df
@@ -85,6 +97,7 @@ def load_data(symbol: str, start: Optional[str] = None, end: Optional[str] = Non
         return hit[1]
 
     source = "yfinance"
+    synthetic = False
     try:
         raw = fetch_online(symbol, start, end)
         df = prepare(raw)
@@ -92,14 +105,20 @@ def load_data(symbol: str, start: Optional[str] = None, end: Optional[str] = Non
         log.warning("online fetch failed for %s (%s); trying CSV", symbol, exc)
         source = "csv"
         try:
-            df = prepare(load_csv(symbol))
+            csv_df = load_csv(symbol)
+            origin = next((c for c in csv_df.columns if str(c).strip().lower() == "origin"), None)
+            synthetic = bool(origin and (csv_df[origin].astype(str).str.lower() == "synthetic").any())
+            df = prepare(csv_df)
         except DataNotFoundError:
             raise
         except Exception as exc2:
             raise DataNotFoundError(f"no data for {symbol}: {exc2}") from exc2
+        if synthetic:
+            log.warning("%s served from SYNTHETIC placeholder CSV rows; run fetch_offline_data.py with internet", symbol)
     if len(df) < config.BASELINE_WINDOW + config.HORIZON + 1:
         raise DataNotFoundError(f"not enough rows for {symbol}: {len(df)}")
     df["source"] = source
+    df["synthetic"] = synthetic
     _cache[key] = (time.time(), df)
     return df
 

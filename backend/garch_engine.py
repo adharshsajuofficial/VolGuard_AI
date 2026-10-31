@@ -29,18 +29,24 @@ def fit_garch(returns):
 
 
 def forecast_garch_5day(res, horizon: int = config.HORIZON) -> float:
-    """Annualized vol (%) over the next `horizon` days.
+    """Annualized vol (%) over the next `horizon` days (5 by default; 10/20 supported).
 
     Sums the h=1..horizon conditional variances (cumulative window variance),
     then annualizes by 252/horizon. Variances are already in %^2 because the
     fit used percent returns, so no extra x100.
     """
+    if horizon < 1:
+        raise GarchError("horizon must be >= 1")
     f = res.forecast(horizon=horizon, reindex=False)
     var = np.asarray(f.variance.values[-1], dtype=float)
     out = float(np.sqrt(config.TRADING_DAYS / horizon * var.sum()))
     if not np.isfinite(out):
         raise GarchError("non-finite forecast")
     return out
+
+
+# Horizon-neutral alias.
+forecast_garch = forecast_garch_5day
 
 
 def garch_forecast_from_returns(returns, horizon: int = config.HORIZON) -> float:

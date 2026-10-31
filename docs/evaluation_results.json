@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T08:39:37.067332",
+  "generated_at": "2026-10-31T21:29:42.862231",
   "assets": {
     "SPY": {
       "symbol": "SPY",
@@ -120,8 +120,8 @@
       "avg_realized_vol": 6.31,
       "max_realized_vol": 14.37,
       "baseline_mae": 2.84,
-      "garch_mae": 4.03,
-      "garch_improvement_pct": -42.0,
+      "garch_mae": 3.95,
+      "garch_improvement_pct": -39.1,
       "samples": 84
     },
     "2024-2026 Recent Market Dynamics": {
@@ -135,17 +135,17 @@
     }
   },
   "volatility_clustering": {
-    "omega": 0.040809,
-    "alpha": 0.1729,
-    "beta": 0.793,
-    "persistence": 0.9658,
-    "half_life_trading_days": 19.9,
+    "omega": 0.04123,
+    "alpha": 0.174,
+    "beta": 0.7893,
+    "persistence": 0.9634,
+    "half_life_trading_days": 18.6,
     "squared_return_autocorrelations": {
-      "lag_1": 0.4204,
-      "lag_2": 0.4528,
-      "lag_5": 0.2829,
-      "lag_10": 0.2145,
-      "lag_20": 0.0965
+      "lag_1": 0.4206,
+      "lag_2": 0.453,
+      "lag_5": 0.2832,
+      "lag_10": 0.2154,
+      "lag_20": 0.0976
     }
   }
 }
