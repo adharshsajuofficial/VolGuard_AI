@@ -1,38 +1,34 @@
 import React from 'react';
-import { AlertTriangle, ShieldCheck, AlertOctagon, Flame, Info } from 'lucide-react';
+import { AlertTriangle, ShieldCheck, AlertOctagon, Flame } from 'lucide-react';
 
 const RISK_CONFIG = {
   low: {
-    label: 'LOW RISK',
+    label: 'STABLE BASELINE REGIME',
     color: '#10B981',
-    bgColor: 'rgba(16, 185, 129, 0.12)',
-    borderColor: 'rgba(16, 185, 129, 0.4)',
+    borderColor: '#10B981',
     icon: ShieldCheck,
-    description: 'Sub-15% annualized volatility. Market regime indicates stable pricing and normal liquidity.'
+    description: 'Sub-15% annualized volatility. Macro conditions exhibit compressed variance, robust liquidity depth, and orderly capital formation.'
   },
   moderate: {
-    label: 'MODERATE RISK',
+    label: 'MODERATE VOLATILITY REGIME',
     color: '#F59E0B',
-    bgColor: 'rgba(245, 158, 11, 0.12)',
-    borderColor: 'rgba(245, 158, 11, 0.4)',
+    borderColor: '#F59E0B',
     icon: AlertTriangle,
-    description: '15% – 25% annualized volatility. Typical market variance; monitor ongoing positions.'
+    description: '15% – 25% annualized volatility. Standard equity variance envelope. Normal portfolio risk limits and hedging parameters active.'
   },
   high: {
-    label: 'HIGH RISK',
+    label: 'ELEVATED TAIL REGIME',
     color: '#F97316',
-    bgColor: 'rgba(249, 115, 22, 0.14)',
-    borderColor: 'rgba(249, 115, 22, 0.45)',
+    borderColor: '#F97316',
     icon: AlertOctagon,
-    description: '25% – 35% annualized volatility. Heightened turbulence; volatility clustering detected.'
+    description: '25% – 35% annualized volatility. Heightened turbulence; volatility clustering detected across rolling high-frequency intervals.'
   },
   extreme: {
-    label: 'EXTREME RISK',
+    label: 'EXTREME TAIL RISK / CRISIS',
     color: '#EF4444',
-    bgColor: 'rgba(239, 68, 68, 0.16)',
-    borderColor: 'rgba(239, 68, 68, 0.5)',
+    borderColor: '#EF4444',
     icon: Flame,
-    description: 'Surpassing 35% annualized volatility. Severe shock or crisis conditions; hedging recommended.'
+    description: 'Exceeding 35% annualized volatility. Severe liquidity dislocation or sovereign shock conditions; defensive hedging and capital preservation enforced.'
   }
 };
 
@@ -41,74 +37,74 @@ export default function RiskBadge({ forecastData }) {
 
   const riskKey = (forecastData.risk_level || 'moderate').toLowerCase();
   const config = RISK_CONFIG[riskKey] || RISK_CONFIG.moderate;
-  const IconComponent = config.icon;
   const vol = forecastData.garch_forecast ?? forecastData.baseline_forecast ?? 18.0;
   const riskScore = forecastData.risk_score ?? Math.min(100, Math.round(vol * 2.2));
 
   return (
-    <div 
+    <section 
       className="card risk-badge-card"
       style={{ 
-        borderColor: config.borderColor,
-        background: `linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, ${config.bgColor} 100%)` 
+        borderLeft: `2px solid ${config.color}`
       }}
+      aria-label="Sovereign Risk Assessment Summary"
     >
       <div className="risk-badge-header">
         <div className="risk-badge-title-wrap">
           <div 
-            className="risk-indicator-pill" 
+            className="risk-status-chip"
             style={{ 
-              backgroundColor: config.bgColor, 
-              color: config.color,
-              borderColor: config.borderColor
+              borderColor: config.borderColor,
+              color: config.color
             }}
           >
-            <span className="pulse-dot" style={{ backgroundColor: config.color }} />
-            <IconComponent size={18} />
-            <span className="risk-label-text">{config.label}</span>
+            <span className="chip-square-block" style={{ backgroundColor: config.color }} aria-hidden="true" />
+            <span className="chip-label-text">{config.label}</span>
           </div>
-          <span className="risk-horizon-tag">Next {forecastData.forecast_horizon_days || 5} Trading Days</span>
+          <span className="risk-horizon-tag label-uppercase">
+            {forecastData.forecast_horizon_days || 5}-DAY FORWARD MATRIX
+          </span>
         </div>
 
         <div className="risk-vol-value-wrap">
-          <span className="risk-vol-sub">Projected Annualized Volatility</span>
-          <span className="risk-vol-main" style={{ color: config.color }}>
+          <span className="risk-vol-sub label-uppercase">PROJECTED ANNUALIZED VOLATILITY (σ)</span>
+          <span className="risk-vol-main tabular-nums" style={{ color: config.color }}>
             {vol.toFixed(1)}%
           </span>
         </div>
       </div>
 
-      {/* Risk Score Progress Bar */}
+      {/* Risk Index Progress Bar */}
       <div className="risk-meter-container">
         <div className="risk-meter-labels">
-          <span>Risk Index</span>
-          <span className="risk-meter-val" style={{ color: config.color }}>{riskScore} / 100</span>
+          <span className="risk-meter-title label-uppercase">QUANTITATIVE RISK FACTOR</span>
+          <span className="risk-meter-val tabular-nums" style={{ color: config.color }}>
+            {riskScore} <span className="risk-meter-denom">/ 100</span>
+          </span>
         </div>
-        <div className="risk-meter-track">
+        <div className="risk-meter-track" role="progressbar" aria-valuenow={riskScore} aria-valuemin={0} aria-valuemax={100}>
           <div 
             className="risk-meter-fill"
             style={{ 
               width: `${Math.min(100, Math.max(5, riskScore))}%`,
-              backgroundColor: config.color,
-              boxShadow: `0 0 12px ${config.color}`
+              backgroundColor: config.color
             }}
           />
         </div>
-        <div className="risk-meter-ticks">
-          <span>0 (Calm)</span>
-          <span>25 (Normal)</span>
-          <span>50 (Elevated)</span>
-          <span>75 (Turbulent)</span>
-          <span>100 (Crisis)</span>
+        <div className="risk-meter-ticks label-uppercase" aria-hidden="true">
+          <span>0 (CALM)</span>
+          <span>25 (BASELINE)</span>
+          <span>50 (ELEVATED)</span>
+          <span>75 (TURBULENT)</span>
+          <span>100 (CRISIS)</span>
         </div>
       </div>
 
-      {/* Summary Narrative */}
+      {/* Editorial Risk Memorandum */}
       <div className="risk-narrative-box">
-        <p className="risk-narrative-text">
+        <p className="risk-narrative-editorial">
           {forecastData.summary || config.description}
         </p>
       </div>
-    </div>
+    </section>
   );
 }

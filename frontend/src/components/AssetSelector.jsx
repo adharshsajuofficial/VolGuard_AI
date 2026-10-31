@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import { Search, TrendingUp, Calendar, ArrowRight } from 'lucide-react';
 
 const POPULAR_ASSETS = [
-  { symbol: 'SPY', name: 'S&P 500 (US)', category: 'Broad Market' },
-  { symbol: '^NSEI', name: 'NIFTY 50 (India)', category: 'Indian Equities' },
-  { symbol: 'QQQ', name: 'Nasdaq 100', category: 'Tech Index' },
-  { symbol: 'DIA', name: 'Dow Jones', category: 'Blue Chip' },
-  { symbol: 'AAPL', name: 'Apple Inc.', category: 'Large Cap' },
+  { symbol: 'SPY', name: 'S&P 500 ETF', category: 'Broad US' },
+  { symbol: '^NSEI', name: 'NIFTY 50', category: 'NSE India' },
+  { symbol: 'QQQ', name: 'Nasdaq 100', category: 'Tech Sector' },
+  { symbol: 'DIA', name: 'Dow Jones', category: 'Mega Cap' },
+  { symbol: 'AAPL', name: 'Apple Inc.', category: 'Equities' },
   { symbol: 'TSLA', name: 'Tesla Inc.', category: 'High Beta' }
 ];
 
 const HORIZONS = [
-  { days: 5, label: '5-Day Horizon', badge: 'Standard Target' },
-  { days: 10, label: '10-Day Horizon', badge: 'Extended' },
-  { days: 20, label: '20-Day Horizon', badge: 'Monthly' }
+  { days: 5, label: '5-Day Horizon', badge: 'Primary Benchmark' },
+  { days: 10, label: '10-Day Horizon', badge: 'Bi-Weekly Matrix' },
+  { days: 20, label: '20-Day Horizon', badge: 'Monthly Window' }
 ];
 
 export default function AssetSelector({ 
@@ -35,14 +35,14 @@ export default function AssetSelector({
   };
 
   return (
-    <div className="card selector-container">
+    <section className="card selector-container" aria-label="Asset & Horizon Matrix">
       <div className="selector-section">
         <div className="section-label">
-          <TrendingUp size={16} />
-          <span>Select Target Asset / Market Index</span>
+          <TrendingUp size={14} aria-hidden="true" />
+          <span>PORTFOLIO SECTOR &amp; UNDERLYING INSTRUMENT</span>
         </div>
 
-        <div className="asset-pills-wrap">
+        <div className="asset-pills-wrap" role="group" aria-label="Quick asset selection">
           {POPULAR_ASSETS.map((asset) => {
             const isSelected = currentSymbol.toUpperCase() === asset.symbol.toUpperCase();
             return (
@@ -50,49 +50,53 @@ export default function AssetSelector({
                 key={asset.symbol}
                 type="button"
                 onClick={() => onSelectAsset(asset.symbol)}
-                className={`asset-pill ${isSelected ? 'asset-pill-active' : ''}`}
+                className={`asset-btn ${isSelected ? 'asset-btn-active' : ''}`}
                 disabled={loading}
+                aria-pressed={isSelected}
               >
-                <span className="asset-pill-symbol">{asset.symbol}</span>
-                <span className="asset-pill-name">{asset.name}</span>
+                <span className="asset-symbol tabular-nums">{asset.symbol}</span>
+                <span className="asset-name">{asset.name}</span>
               </button>
             );
           })}
         </div>
 
         {/* Custom ticker search */}
-        <form onSubmit={handleCustomSubmit} className="custom-ticker-form">
+        <form onSubmit={handleCustomSubmit} className="custom-ticker-form" role="search">
           <div className="input-with-icon">
-            <Search size={16} className="search-icon" />
+            <Search size={14} className="search-icon" aria-hidden="true" />
             <input
               type="text"
-              placeholder="Enter Custom Symbol (e.g. MSFT, NVDA, GOOG)..."
+              id="custom-symbol-input"
+              placeholder="QUERY CUSTOM TICKER (e.g. MSFT, NVDA, GOOG, ^GSPC)..."
               value={customInput}
               onChange={(e) => setCustomInput(e.target.value)}
               className="custom-ticker-input"
               disabled={loading}
+              aria-label="Enter Custom Ticker Symbol"
             />
           </div>
           <button 
             type="submit" 
             className="btn-submit-ticker"
             disabled={loading || !customInput.trim()}
+            title="Load Market Data for Custom Symbol"
           >
-            <span>Analyze</span>
-            <ArrowRight size={14} />
+            <span>INGEST</span>
+            <ArrowRight size={13} aria-hidden="true" />
           </button>
         </form>
       </div>
 
-      <div className="selector-divider" />
+      <div className="selector-divider" aria-hidden="true" />
 
-      {/* Forecast Horizon Selector */}
+      {/* Forecast Horizon Matrix */}
       <div className="horizon-section">
         <div className="section-label">
-          <Calendar size={16} />
-          <span>Forecast Horizon Window (σ Horizon)</span>
+          <Calendar size={14} aria-hidden="true" />
+          <span>ESTIMATION WINDOW (σ HORIZON)</span>
         </div>
-        <div className="horizon-buttons-wrap">
+        <div className="horizon-buttons-wrap" role="group" aria-label="Forecast horizon selection">
           {HORIZONS.map((h) => {
             const isSelected = currentHorizon === h.days;
             return (
@@ -102,14 +106,15 @@ export default function AssetSelector({
                 onClick={() => onSelectHorizon(h.days)}
                 className={`horizon-btn ${isSelected ? 'horizon-btn-active' : ''}`}
                 disabled={loading}
+                aria-pressed={isSelected}
               >
-                <span className="horizon-label">{h.label}</span>
+                <span className="horizon-label tabular-nums">{h.label}</span>
                 <span className="horizon-sub">{h.badge}</span>
               </button>
             );
           })}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -3,25 +3,25 @@ import { AlertCircle, RefreshCw, Radio } from 'lucide-react';
 
 export default function ErrorState({ error, onRetry, onSwitchToDemo }) {
   return (
-    <div className="error-container">
+    <div className="error-container" role="alert">
       <div className="card error-card">
-        <div className="error-icon-box">
-          <AlertCircle size={32} />
+        <div className="error-icon-box" aria-hidden="true">
+          <AlertCircle size={28} />
         </div>
-        <h3 className="error-title">Unable to Retrieve Volatility Forecast</h3>
+        <h2 className="error-title">Quantitative Engine Execution Aborted</h2>
         <p className="error-message">
-          {error || 'An unexpected network error occurred while querying the volatility calculation engine.'}
+          {error || 'An unexpected socket timeout or mathematical error interrupted the econometric estimation engine.'}
         </p>
 
         <div className="error-actions-row">
           <button type="button" onClick={onRetry} className="btn-primary">
-            <RefreshCw size={15} />
-            <span>Retry Query</span>
+            <RefreshCw size={13} aria-hidden="true" />
+            <span>RE-EXECUTE ESTIMATION</span>
           </button>
           {onSwitchToDemo && (
             <button type="button" onClick={onSwitchToDemo} className="btn-secondary">
-              <Radio size={15} />
-              <span>Switch to Demo Simulation Mode</span>
+              <Radio size={13} aria-hidden="true" />
+              <span>ENGAGE OFFLINE SIMULATION</span>
             </button>
           )}
         </div>

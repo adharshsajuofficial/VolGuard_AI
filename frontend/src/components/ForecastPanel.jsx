@@ -10,71 +10,73 @@ export default function ForecastPanel({ forecastData, onOpenMethodology }) {
   const horizon = forecastData.forecast_horizon_days || 5;
 
   return (
-    <div className="forecast-panel-grid">
+    <section className="forecast-panel-grid" aria-label="Econometric Forecast Matrix">
       {/* 20-Day Baseline Model Card */}
       <div className="card metric-card">
         <div className="metric-header">
-          <div className="metric-icon-wrap icon-baseline">
-            <Gauge size={20} />
+          <div className="metric-icon-wrap" aria-hidden="true">
+            <Gauge size={16} />
           </div>
           <div className="metric-title-group">
-            <h3 className="metric-title">20-Day Baseline Model</h3>
-            <span className="metric-subtitle">Historical Realized Rolling Volatility</span>
+            <h2 className="metric-title">20-Day Historical Benchmark</h2>
+            <span className="metric-subtitle label-uppercase">NON-PARAMETRIC REALIZED VARIANCE</span>
           </div>
         </div>
 
         <div className="metric-body">
-          <div className="metric-primary-value">
+          <div className="metric-primary-value tabular-nums">
             {baseline != null ? `${baseline.toFixed(1)}%` : 'N/A'}
           </div>
-          <div className="metric-unit-badge">Annualized Volatility (σ Baseline)</div>
+          <div className="metric-unit-badge label-uppercase">ANNUALIZED SIGMA (σ BASELINE)</div>
         </div>
 
         <div className="metric-footer">
-          <span className="metric-footer-note">
-            Target: <strong>{horizon}-Day Horizon</strong>
+          <span className="metric-footer-note label-uppercase">
+            TARGET HORIZON: <strong>{horizon} TRADING DAYS</strong>
           </span>
           <button 
             type="button" 
             onClick={onOpenMethodology} 
             className="metric-help-btn"
-            title="Formula: sqrt(252/20 * sum(r_t^2))"
+            title="Inspect Baseline Mathematical Formulation"
+            aria-label="Inspect 20-day baseline formula"
           >
-            <HelpCircle size={14} />
+            <HelpCircle size={13} aria-hidden="true" />
           </button>
         </div>
       </div>
 
-      {/* GARCH(1,1) Econometric Model Card */}
-      <div className="card metric-card">
+      {/* GARCH(1,1) Econometric Model Card - Signature Amber Focus */}
+      <div className="card metric-card metric-card-amber-focus">
         <div className="metric-header">
-          <div className="metric-icon-wrap icon-garch">
-            <Cpu size={20} />
+          <div className="metric-icon-wrap metric-icon-amber" aria-hidden="true">
+            <Cpu size={16} />
           </div>
           <div className="metric-title-group">
-            <h3 className="metric-title">GARCH(1,1) Model</h3>
-            <span className="metric-subtitle">Conditional Variance &amp; Clustering</span>
+            <h2 className="metric-title">GARCH(1,1) Core Engine</h2>
+            <span className="metric-subtitle label-uppercase">PARAMETRIC CONDITIONAL VARIANCE</span>
           </div>
         </div>
 
         <div className="metric-body">
-          <div className="metric-primary-value" style={{ color: '#38BDF8' }}>
-            {garch != null ? `${garch.toFixed(1)}%` : 'Null (Fit Pending)'}
+          <div className="metric-primary-value metric-value-amber tabular-nums">
+            {garch != null ? `${garch.toFixed(1)}%` : 'FIT PENDING'}
           </div>
-          <div className="metric-unit-badge">Parametric Conditional Volatility</div>
+          <div className="metric-unit-badge label-uppercase">VOLATILITY CLUSTERING VECTOR</div>
         </div>
 
         <div className="metric-footer">
-          <span className="metric-footer-note">
-            {garch != null ? 'Fitted on Zero-Lookahead Returns' : 'Awaiting Arch Estimation'}
+          <span className="metric-footer-note label-uppercase">
+            {garch != null ? 'FITTED WITH ZERO LOOKAHEAD' : 'AWAITING MLE CONVERGENCE'}
           </span>
           <button 
             type="button" 
             onClick={onOpenMethodology} 
             className="metric-help-btn"
-            title="Formula: sigma_t^2 = omega + alpha*eps^2 + beta*sigma_{t-1}^2"
+            title="Inspect GARCH(1,1) Maximum Likelihood Equations"
+            aria-label="Inspect GARCH formula"
           >
-            <HelpCircle size={14} />
+            <HelpCircle size={13} aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -82,17 +84,17 @@ export default function ForecastPanel({ forecastData, onOpenMethodology }) {
       {/* Model Spread & Divergence Card */}
       <div className="card metric-card">
         <div className="metric-header">
-          <div className="metric-icon-wrap icon-spread">
-            <Layers size={20} />
+          <div className="metric-icon-wrap" aria-hidden="true">
+            <Layers size={16} />
           </div>
           <div className="metric-title-group">
-            <h3 className="metric-title">Model Divergence ($\Delta$)</h3>
-            <span className="metric-subtitle">GARCH vs. 20-Day Baseline</span>
+            <h2 className="metric-title">Model Divergence (Δ Spread)</h2>
+            <span className="metric-subtitle label-uppercase">GARCH MINUS 20-DAY BASELINE</span>
           </div>
         </div>
 
         <div className="metric-body">
-          <div className="metric-primary-value">
+          <div className="metric-primary-value tabular-nums">
             {spread != null ? (
               <span className={`spread-val ${spread >= 0 ? 'spread-pos' : 'spread-neg'}`}>
                 {spread >= 0 ? `+${spread.toFixed(2)}%` : `${spread.toFixed(2)}%`}
@@ -103,25 +105,25 @@ export default function ForecastPanel({ forecastData, onOpenMethodology }) {
           </div>
           <div className="metric-unit-badge">
             {spread != null && spread > 0 ? (
-              <span className="spread-badge-text">
-                <ArrowUpRight size={13} /> Volatility expansion expected
+              <span className="spread-badge-text text-expansion label-uppercase">
+                <ArrowUpRight size={13} aria-hidden="true" /> VARIANCE EXPANSION ANTICIPATED
               </span>
             ) : spread != null && spread < 0 ? (
-              <span className="spread-badge-text">
-                <ArrowDownRight size={13} /> Mean reversion / calming trend
+              <span className="spread-badge-text text-contraction label-uppercase">
+                <ArrowDownRight size={13} aria-hidden="true" /> MEAN-REVERSION CONTRACTION
               </span>
             ) : (
-              'Neutral divergence'
+              <span className="label-uppercase">PARITY SPREAD</span>
             )}
           </div>
         </div>
 
         <div className="metric-footer">
-          <span className="metric-footer-note">
-            {spread != null ? `Δ = ${Math.abs(spread).toFixed(1)} pts spread` : 'Single model active'}
+          <span className="metric-footer-note label-uppercase tabular-nums">
+            {spread != null ? `Δ = ${Math.abs(spread).toFixed(2)} PTS DIFFERENTIAL` : 'SINGLE MODEL ACTIVE'}
           </span>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

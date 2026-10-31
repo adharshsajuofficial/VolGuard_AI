@@ -285,7 +285,7 @@ export async function fetchHistory(symbol = 'SPY', days = 90) {
       ...data,
       isSimulated: false
     };
-  } catch (err) {
+  } catch {
     const { history } = generateSyntheticHistory(symbol, days);
     return {
       symbol: symbol.toUpperCase(),
@@ -314,7 +314,7 @@ export async function fetchBacktest(symbol = 'SPY') {
       ...data,
       isSimulated: false
     };
-  } catch (err) {
+  } catch {
     const fallback = generateSyntheticBacktest(symbol);
     return {
       ...fallback,

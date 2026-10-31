@@ -23,7 +23,7 @@ export default function App() {
   const [historyData, setHistoryData] = useState(null);
   const [backtestData, setBacktestData] = useState(null);
   const [isMethodologyOpen, setIsMethodologyOpen] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [lastUpdated, setLastUpdated] = useState(() => new Date());
 
   const loadData = useCallback(async (targetSymbol, targetHorizon) => {
     setLoading(true);
@@ -67,10 +67,6 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* Background Decorative Gradients */}
-      <div className="bg-glow glow-top-left" />
-      <div className="bg-glow glow-bottom-right" />
-
       {/* Header */}
       <Header
         symbol={symbol}
@@ -146,13 +142,15 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="footer-container">
-        <div className="footer-content">
-          <span>VolGuard AI • Financial Volatility Forecasting Platform</span>
-          <span className="footer-dot">•</span>
-          <span>Person 2 Frontend Dashboard</span>
-          <span className="footer-dot">•</span>
-          <span>Target: 5-Day Annualized Realized Volatility</span>
+      <footer className="footer-container" role="contentinfo">
+        <div className="footer-content label-uppercase">
+          <span className="footer-brand">VOLGUARD AI</span>
+          <span className="footer-dot" aria-hidden="true">•</span>
+          <span>SOVEREIGN RISK MATRIX // MACRO INTELLIGENCE</span>
+          <span className="footer-dot" aria-hidden="true">•</span>
+          <span>TARGET: 5-DAY ANNUALIZED REALIZED VOLATILITY (σ 5D)</span>
+          <span className="footer-dot" aria-hidden="true">•</span>
+          <span className="footer-spec">ZERO-LOOKAHEAD GARCH(1,1) WALKING MATRIX</span>
         </div>
       </footer>
 

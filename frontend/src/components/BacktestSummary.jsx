@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award, Target, TrendingDown, CheckSquare, Layers, ShieldCheck } from 'lucide-react';
+import { Award, CheckSquare, ShieldCheck } from 'lucide-react';
 
 export default function BacktestSummary({ backtestData, symbol }) {
   if (!backtestData || !backtestData.metrics) return null;
@@ -8,71 +8,77 @@ export default function BacktestSummary({ backtestData, symbol }) {
   const outperf = m.outperformance_percent ?? 12.5;
 
   return (
-    <div className="card backtest-summary-card">
+    <section className="card backtest-summary-card" aria-label="Quantitative Benchmark Ledger">
       <div className="summary-header">
         <div className="summary-header-left">
-          <div className="summary-icon-box">
-            <Award size={20} />
+          <div className="summary-icon-box" aria-hidden="true">
+            <Award size={16} />
           </div>
           <div>
-            <h3 className="summary-title">Quantitative Backtest Benchmark</h3>
-            <span className="summary-subtitle">
-              Strict Chronological Walk-Forward Evaluation • {symbol} Held-Out Window
+            <h2 className="summary-title">Quantitative Backtest Ledger &amp; Error Metrics</h2>
+            <span className="summary-subtitle label-uppercase">
+              STRICT CHRONOLOGICAL OUT-OF-SAMPLE VERIFICATION • {symbol} VALIDATION DOSSIER
             </span>
           </div>
         </div>
 
-        <div className="outperf-pill">
-          <TrendingDown size={16} />
-          <span>{outperf > 0 ? `${outperf}% Error Reduction with GARCH` : 'Models Evaluated'}</span>
+        <div className="outperf-pill" role="status">
+          <span className="chip-square-block" style={{ backgroundColor: '#10B981' }} aria-hidden="true" />
+          <span className="label-uppercase">{outperf > 0 ? `${outperf}% ERROR REDUCTION VIA GARCH` : 'BENCHMARKS EVALUATED'}</span>
         </div>
       </div>
 
       <div className="summary-metrics-grid">
         {/* Baseline MAE */}
         <div className="summary-metric-box">
-          <div className="summary-metric-label">Baseline MAE</div>
-          <div className="summary-metric-value">{m.baseline_mae != null ? `${m.baseline_mae}%` : '2.82%'}</div>
-          <div className="summary-metric-sub">Mean Absolute Error (20d Rolling)</div>
+          <div className="summary-metric-label label-uppercase">BASELINE MAE</div>
+          <div className="summary-metric-value tabular-nums">{m.baseline_mae != null ? `${m.baseline_mae}%` : '2.82%'}</div>
+          <div className="summary-metric-sub label-uppercase">MEAN ABSOLUTE ERROR (20D ROLLING)</div>
         </div>
 
         {/* GARCH MAE */}
-        <div className="summary-metric-box highlight-metric">
-          <div className="summary-metric-label">GARCH(1,1) MAE</div>
-          <div className="summary-metric-value text-cyan">{m.garch_mae != null ? `${m.garch_mae}%` : '2.45%'}</div>
-          <div className="summary-metric-sub">Mean Absolute Error (Parametric)</div>
+        <div className="summary-metric-box highlight-metric-amber">
+          <div className="summary-metric-label label-uppercase">GARCH(1,1) MAE</div>
+          <div className="summary-metric-value text-amber tabular-nums">{m.garch_mae != null ? `${m.garch_mae}%` : '2.45%'}</div>
+          <div className="summary-metric-sub label-uppercase">PARAMETRIC ABSOLUTE DEVIATION</div>
         </div>
 
         {/* Baseline RMSE */}
         <div className="summary-metric-box">
-          <div className="summary-metric-label">Baseline RMSE</div>
-          <div className="summary-metric-value">{m.baseline_rmse != null ? `${m.baseline_rmse}%` : '3.71%'}</div>
-          <div className="summary-metric-sub">Root Mean Square Error</div>
+          <div className="summary-metric-label label-uppercase">BASELINE RMSE</div>
+          <div className="summary-metric-value tabular-nums">{m.baseline_rmse != null ? `${m.baseline_rmse}%` : '3.71%'}</div>
+          <div className="summary-metric-sub label-uppercase">ROOT MEAN SQUARE PENALTY</div>
         </div>
 
         {/* GARCH RMSE */}
-        <div className="summary-metric-box">
-          <div className="summary-metric-label">GARCH RMSE</div>
-          <div className="summary-metric-value text-cyan">{m.garch_rmse != null ? `${m.garch_rmse}%` : '3.22%'}</div>
-          <div className="summary-metric-sub">Lower Penalization on Shocks</div>
+        <div className="summary-metric-box highlight-metric-amber">
+          <div className="summary-metric-label label-uppercase">GARCH RMSE</div>
+          <div className="summary-metric-value text-amber tabular-nums">{m.garch_rmse != null ? `${m.garch_rmse}%` : '3.22%'}</div>
+          <div className="summary-metric-sub label-uppercase">OPTIMIZED SHOCK ABSORPTION</div>
         </div>
       </div>
 
-      {/* Quantitative Takeaways */}
+      {/* Econometric Findings Dossier */}
       <div className="summary-insights-row">
         <div className="insight-item">
-          <CheckSquare size={16} className="text-emerald" />
-          <span>
-            <strong>Volatility Clustering:</strong> GARCH(1,1) rapidly adapts to shock waves ($\alpha \approx 0.10, \beta \approx 0.85$) where the simple 20-day historical average experiences a lagging reaction.
-          </span>
+          <CheckSquare size={14} className="text-emerald" aria-hidden="true" />
+          <div className="insight-text-wrap">
+            <span className="insight-headline label-uppercase">VOLATILITY CLUSTERING CONVERGENCE</span>
+            <p>
+              The GARCH(1,1) specification dynamically integrates return shock waves (&alpha; &asymp; 0.10, &beta; &asymp; 0.85), overcoming the persistent chronological lag exhibited by non-parametric rolling averages.
+            </p>
+          </div>
         </div>
         <div className="insight-item">
-          <ShieldCheck size={16} className="text-emerald" />
-          <span>
-            <strong>Reproducible &amp; Unit-Consistent:</strong> All forecasts and targets are standardized to 5-day forward annualized realized percentages (√(252/5) × σ 5-day).
-          </span>
+          <ShieldCheck size={14} className="text-emerald" aria-hidden="true" />
+          <div className="insight-text-wrap">
+            <span className="insight-headline label-uppercase">RIGID SCALE &amp; UNIT PARITY</span>
+            <p>
+              Every predictive vector, error residual, and forward ground-truth realized volatility observation is mathematically standardized into annualized percentage points (&radic;(252/5) &times; &sigma; 5d).
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
